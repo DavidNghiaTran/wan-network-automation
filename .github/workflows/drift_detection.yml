@@ -1,0 +1,26 @@
+name: Scheduled Backup & Configuration Drift Detection
+
+on:
+  schedule:
+    - cron: '*/30 * * * *' # Tu dong kiem tra moi 30 phut
+  workflow_dispatch:       # Cho phep bam nut chay tay khi bao ve do an
+
+env:
+  VENV_BIN: /home/nghia/netdevops_env/bin
+
+jobs:
+  drift_check:
+    name: Kiem tra thay doi cau hinh trai phep (Drift)
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+      - name: Thu thap cau hinh thuc te tu 8 thiet bi qua Nornir
+        run: $VENV_BIN/python3 scripts/backup_nornir.py
+      - name: Phat hien sai lech so voi Nguon chan ly (Git Diff)
+        run: |
+          if ! git diff --exit-code backups/latest/; then
+            echo "CANH BAO: Phat hien cau hinh tren thiet bi bi thay doi trai phep (Configuration Drift)!"
+            exit 1
+          else
+            echo "He thong on dinh: Cau hinh thuc te khop 100% voi Git."
+          fi

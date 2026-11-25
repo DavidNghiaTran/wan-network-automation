@@ -1,0 +1,175 @@
+Building configuration...
+
+Current configuration : 2383 bytes
+!
+! Last configuration change at 15:09:53 UTC Tue Nov 24 2026
+!
+version 15.5
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname R3-Branch2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+!
+no aaa new-model
+!
+!
+!
+bsd-client server url https://cloudsso.cisco.com/as/token.oauth2
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+no ip domain lookup
+ip domain name ptit.edu.vn
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+cts logging verbose
+!
+!
+username admin privilege 15 secret 5 $1$30z.$lK1Nau4Wv/hg.CAf.GQvZ1
+!
+redundancy
+!
+!
+ip ssh version 2
+! 
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ description LAN_NETWORK
+ ip address 3.3.3.3 255.255.255.255
+!
+interface Ethernet0/0
+ description OOB-MANAGEMENT 
+ ip address 192.168.254.203 255.255.255.0
+!
+interface Ethernet0/1
+ description BACKUP-TO-BRANCH3
+ ip address 10.0.34.1 255.255.255.252
+!
+interface Ethernet0/2
+ description WAN-TO-HQ
+ ip address 10.0.13.2 255.255.255.252
+!
+interface Ethernet0/3
+ description BACKUP-TO-BRANCH1
+ ip address 10.0.23.2 255.255.255.252
+!
+interface Ethernet1/0
+ description TRUNK-TO-LAN-SWITCH
+ no ip address
+!
+interface Ethernet1/0.10
+ description GATEWAY_SALES_DEPT
+ encapsulation dot1Q 10
+ ip address 192.168.12.11 255.255.255.240
+!
+interface Ethernet1/0.20
+ description GATEWAY_IT_DEPT
+ encapsulation dot1Q 20
+ ip address 192.168.12.21 255.255.255.240
+!
+interface Ethernet1/0.30
+ description GATEWAY_VOIP_NET
+ encapsulation dot1Q 30
+ ip address 192.168.12.33 255.255.255.240
+!
+interface Ethernet1/1
+ no ip address
+ shutdown
+!
+interface Ethernet1/2
+ no ip address
+ shutdown
+!
+interface Ethernet1/3
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 3.3.3.3
+ passive-interface Loopback0
+ network 3.3.3.3 0.0.0.0 area 0
+ network 10.0.13.0 0.0.0.3 area 0
+ network 10.0.23.0 0.0.0.3 area 0
+ network 10.0.0.0 0.0.255.255 area 0
+ network 172.16.3.0 0.0.0.255 area 0
+ network 192.168.12.0 0.0.0.255 area 0
+!
+router bgp 65000
+ bgp router-id 3.3.3.3
+ bgp log-neighbor-changes
+ neighbor 10.0.13.1 remote-as 65000
+!
+ip forward-protocol nd
+!
+!
+no ip http server
+no ip http secure-server
+!
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+!
+line con 0
+ logging synchronous
+line aux 0
+line vty 0 4
+ login local
+ transport input ssh
+!
+ntp server pnpntpserver.localdomain
+!
+end

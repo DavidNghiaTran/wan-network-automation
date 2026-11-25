@@ -1,0 +1,18 @@
+---
+- name: PLAY 1 - Tu dong hoa cau hinh WAN, OSPF, BGP va Gateway tren Router
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Day cau hinh L3 xuong Router tu Jinja2 Template
+      cisco.ios.ios_config:
+        src: ../templates/router_template.j2
+        save_when: modified
+
+- name: PLAY 2 - Tu dong hoa cau hinh VLAN, Trunk va Access Port tren Switch
+  hosts: switches
+  gather_facts: no
+  tasks:
+    - name: Day cau hinh L2 xuong Switch tu Jinja2 Template
+      cisco.ios.ios_config:
+        src: ../templates/switch_template.j2
+        save_when: modified

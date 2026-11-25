@@ -1,0 +1,41 @@
+---
+R1-HQ:
+  hostname: 192.168.254.201
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+R2-Branch1:
+  hostname: 192.168.254.202
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+R3-Branch2:
+  hostname: 192.168.254.203
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+R4-Branch3:
+  hostname: 192.168.254.204
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+SW1-HQ:
+  hostname: 192.168.254.211
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+SW2-Branch1:
+  hostname: 192.168.254.212
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+SW3-Branch2:
+  hostname: 192.168.254.213
+  platform: cisco_ios
+  username: admin
+  password: Admin@123
+SW4-Branch3:
+  hostname: 192.168.254.214
+  platform: cisco_ios
+  username: admin
+  password: Admin@123

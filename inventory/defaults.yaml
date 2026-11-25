@@ -1,0 +1,5 @@
+---
+connection_options:
+  netmiko:
+    extras:
+      ssh_config_file: "~/.ssh/config"

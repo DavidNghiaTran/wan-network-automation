@@ -1,0 +1,34 @@
+interface Loopback0
+ ip address {{ router_id }} 255.255.255.255
+!
+{% for wan in wan_interfaces %}
+interface {{ wan.port }}
+ description {{ wan.desc }}
+ ip address {{ wan.ip }} {{ wan.mask }}
+ no shutdown
+!
+{% endfor %}
+interface {{ lan_interface }}
+ description TRUNK-TO-LAN-SWITCH
+ no ip address
+ no shutdown
+!
+{% for vlan in standard_vlans %}
+interface {{ lan_interface }}.{{ vlan.id }}
+ description GATEWAY_{{ vlan.name }}
+ encapsulation dot1Q {{ vlan.id }}
+ ip address {{ lan_subnet_prefix }}.{{ vlan.gw }} 255.255.255.240
+!
+{% endfor %}
+router ospf {{ ospf_process_id }}
+ router-id {{ router_id }}
+ network 10.0.0.0 0.0.255.255 area 0
+ network {{ lan_subnet_prefix }}.0 0.0.0.255 area 0
+ network {{ router_id }} 0.0.0.0 area 0
+!
+router bgp {{ bgp_asn }}
+ bgp router-id {{ router_id }}
+ bgp log-neighbor-changes
+{% for peer in bgp_neighbors %}
+ neighbor {{ peer }} remote-as {{ bgp_asn }}
+{% endfor %}

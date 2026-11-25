@@ -1,0 +1,11 @@
+router_id: 1.1.1.1
+lan_subnet_prefix: "192.168.1"
+lan_interface: "Ethernet1/0"
+wan_interfaces:
+  - { port: "Ethernet0/1", ip: "10.0.12.1", mask: "255.255.255.252", desc: "WAN-TO-BRANCH1" }
+  - { port: "Ethernet0/2", ip: "10.0.13.1", mask: "255.255.255.252", desc: "WAN-TO-BRANCH2" }
+  - { port: "Ethernet0/3", ip: "10.0.14.1", mask: "255.255.255.252", desc: "WAN-TO-BRANCH3" }
+bgp_neighbors:
+  - "10.0.12.2"
+  - "10.0.13.2"
+  - "10.0.14.2"

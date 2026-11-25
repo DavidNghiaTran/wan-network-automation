@@ -1,0 +1,8 @@
+router_id: 4.4.4.4
+lan_subnet_prefix: "192.168.13"
+lan_interface: "Ethernet1/0"
+wan_interfaces:
+  - { port: "Ethernet0/1", ip: "10.0.14.2", mask: "255.255.255.252", desc: "WAN-TO-HQ" }
+  - { port: "Ethernet0/2", ip: "10.0.34.2", mask: "255.255.255.252", desc: "BACKUP-TO-BRANCH2" }
+bgp_neighbors:
+  - "10.0.14.1"

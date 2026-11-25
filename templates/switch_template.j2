@@ -1,0 +1,17 @@
+{% for vlan in standard_vlans %}
+vlan {{ vlan.id }}
+ name {{ vlan.name }}
+!
+{% endfor %}
+interface Ethernet0/1
+ description UPLINK-TRUNK-TO-ROUTER
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ no shutdown
+!
+interface Ethernet0/2
+ description ACCESS-PORT-PC-VLAN10
+ switchport mode access
+ switchport access vlan 10
+ spanning-tree portfast
+ no shutdown
