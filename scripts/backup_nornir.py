@@ -14,11 +14,17 @@ def backup_config(task: Task) -> Result:
         task=netmiko_send_command,
         command_string="show running-config"
     )
-    
-    # Lọc bỏ dòng động "Current configuration : xxx bytes" và NTP clock để tránh báo Drift giả
+
+    # Lọc các dòng thay đổi theo thời gian của Cisco IOS để tránh báo Drift giả
+    ignored_prefixes = (
+        "Current configuration",
+        "! Last configuration",
+        "! NVRAM config",
+        "ntp clock-period",
+    )
     lines = [
         line for line in output.result.splitlines()
-        if not line.startswith("Current configuration") and not line.startswith("! Last configuration")
+        if not line.startswith(ignored_prefixes)
     ]
     clean_config = "\n".join(lines) + "\n"
 
@@ -38,11 +44,12 @@ def backup_config(task: Task) -> Result:
 
 def main():
     start_time = time.perf_counter()
+    print("=== BAT DAU SAO LUU 8 THIET BI BANG NORNIR (MULTI-THREADING) ===")
     nr = InitNornir(config_file="config.yaml")
     results = nr.run(task=backup_config)
     print_result(results)
     elapsed = time.perf_counter() - start_time
-    print(f"=== TONG THOI GIAN SAO LUU 8 THIET BI (NORNIR): {elapsed:.3f} GIAY ===")
+    print(f"=== TONG THOI GIAN SAO LUU: {elapsed:.3f} GIAY ===")
 
 if __name__ == "__main__":
     main()

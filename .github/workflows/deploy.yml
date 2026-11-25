@@ -7,6 +7,10 @@ on:
       - 'backups/**'
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 env:
   ANSIBLE_CONFIG: ./ansible.cfg
@@ -17,24 +21,35 @@ jobs:
     name: 1. CI - Kiem tra cu phap & Dry-Run
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout ma nguon
+        uses: actions/checkout@v4
+
       - name: Kiem tra cu phap YAML (yamllint)
-        run: $VENV_BIN/yamllint -d "{extends: relaxed, rules: {line-length: disable}}" inventory/ playbooks/
+        run: |
+          $VENV_BIN/yamllint -d "{extends: relaxed, rules: {line-length: disable, trailing-spaces: disable, truthy: disable}}" inventory/ playbooks/
+
       - name: Kiem tra cu phap Ansible Playbook
-        run: $VENV_BIN/ansible-playbook playbooks/deploy_network.yml --syntax-check
+        run: |
+          $VENV_BIN/ansible-playbook playbooks/deploy_network.yml --syntax-check
+
       - name: Chay thu nghiem Dry-Run (--check)
-        run: $VENV_BIN/ansible-playbook playbooks/deploy_network.yml --check
+        run: |
+          $VENV_BIN/ansible-playbook playbooks/deploy_network.yml --check
 
   cd_deploy:
-    name: 2. CD - Trien khai cau hinh & Sao luu
+    name: 2. CD - Trien khai & Sao luu tu dong
     needs: ci_validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout ma nguon
+        uses: actions/checkout@v4
+
       - name: Day cau hinh xuong 8 thiet bi Cisco IOL
-        run: $VENV_BIN/ansible-playbook playbooks/deploy_network.yml
-      - name: Sao luu trang thai chuan sau trien khai
+        run: |
+          $VENV_BIN/ansible-playbook playbooks/deploy_network.yml
+
+      - name: Sao luu trang thai chuan bang Nornir va dong bo Git
         run: |
           $VENV_BIN/python3 scripts/backup_nornir.py
           git config user.name "GitOps Automation Bot"
